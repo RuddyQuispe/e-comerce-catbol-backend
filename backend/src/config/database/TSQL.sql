@@ -36,14 +36,14 @@ begin
 	end if;
 end; $BODY$ language plpgsql;
 
-create or replace function register_detail_note(no_entry_i integer, id_tail_i smallint, code_clothing_i integer) returns boolean as 
+create or replace function register_detail_note(no_entry_i integer, id_tail_i smallint, code_clothing_i integer, quantity_i smallint ) returns integer as 
 $BODY$
 declare enable_clothing boolean = (select estatus from clothing where code_clothing=code_clothing_i);
 		is_group_clothing integer = (select count(*) from clothing_group where code_clothing_super=code_clothing_i);
 		id_detail_r integer;
 begin 
 	if (enable_clothing and is_group_clothing=0) then
-		insert into entry_detail(no_entry, id_tail, code_clothing) values (no_entry_i, id_tail_i, code_clothing_i) returning id_detail into id_detail_r;
+		insert into entry_detail(no_entry, id_tail, code_clothing, quantity) values (no_entry_i, id_tail_i, code_clothing_i, quantity_i) returning id_detail into id_detail_r;
 		return id_detail_r;
 	else
 		return -1;

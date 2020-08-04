@@ -20,6 +20,7 @@ app.use(morgan('dev'));
 app.use(require('./routes/InventoryShoppingManage/userManage.route'));
 app.use(require('./routes/InventoryShoppingManage/providerManage.route'));
 app.use(require('./routes/InventoryShoppingManage/entryNoteManage.route'));
+app.use(require('./routes/InventoryShoppingManage/inventoryManage.route'));
 
 
 module.exports = app;
