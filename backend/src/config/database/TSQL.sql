@@ -60,10 +60,15 @@ end $BODY$ language plpgsql;
 
 create or replace function register_size(description_i text)returns smallint as
 $BODY$
-declare code smallint;
+declare exists_size integer = (select count(*) from "size" where description=description_i);
+		code smallint;
 begin 
-	insert into "size"(description) values (description_i) returning id into code;
-	return code;
+	if (exists_size>0) then 
+		return -1;
+	else
+		insert into "size"(description) values (description_i) returning id into code;
+		return code;
+	end if ;
 end $BODY$ language plpgsql;
 
 create or replace function register_size_clothes(id_size_i smallint, code_clothing_i integer, price_i decimal(12,2), discount_i decimal(12,2))returns boolean as 
