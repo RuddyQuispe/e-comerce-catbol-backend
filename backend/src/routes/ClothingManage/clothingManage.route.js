@@ -1,10 +1,16 @@
 const router = require('express').Router();
 const path = require('path');
-const {postClothing, getClothingManage} = require('../../controllers/ClothingManage/clothingManage.controller');
+const {postClothing, getClothingManage, getPutClothing, putClothing, putEnableDisable} = require('../../controllers/ClothingManage/clothingManage.controller');
 
 router.post('/clothing_manage/clothing_manage', postClothing);
 
 router.get('/clothing_manage/clothing_manage', getClothingManage);
+
+router.get('/clothing_manage/clothing_manage/:code_clothing/:id_size', getPutClothing);
+
+router.put('/clothing_manage/clothing_manage/:code_clothing/:id_size', putClothing);
+
+router.post('/clothing_manage/clothing_manage/enable_disable', putEnableDisable);
 
 //Get Image File to client http://localhost:4000/img/*
 router.get("/img/:id",function(req, res){ 

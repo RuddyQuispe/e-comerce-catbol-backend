@@ -33,11 +33,44 @@ module.exports = {
 
     async getListClothing(){
         try {
-            const response = await pool.query(`select c.code_clothing, sc.id_size, c.description as description_clothing, c.image_name, c.characterists, c.color, sc.price, sc.discount, sc.stock, s.description as size_clothing from clothing c, size_clothes sc, "size" s where c.code_clothing=sc.code_clothing and sc.id_size=s.id`);
+            const response = await pool.query(`select c.code_clothing, sc.id_size, c.description as description_clothing, c.image_name, c.characterists, c.color, sc.price, sc.discount, sc.stock, s.description as size_clothing, c.estatus from clothing c, size_clothes sc, "size" s where c.code_clothing=sc.code_clothing and sc.id_size=s.id`);
             return response.rows;
         } catch (error) {
             console.log("Error in GET clothing List", error);
             return null;
+        }
+    },
+
+    async getDataClothing(codeClothing, idSize){
+        try {
+            const response = await pool.query(`select c.description, c.characterists, c.color, sc.price, sc.discount from clothing c, size_clothes sc where c.code_clothing=sc.code_clothing and c.code_clothing=${codeClothing} and sc.id_size=${idSize}`);
+            return response.rows[0];
+        } catch (error) {
+            console.log("Error in get Data Clothing", error);
+            return null;
+        }
+    },
+
+    async updateClothing(codeClothing, idSize ,description, characteristics, color, cost, discount, imageFile) {
+        try {
+            await pool.query(`update clothing set description='${description}', characterists='${characteristics}', color='${color}', image_name='${imageFile}' where code_clothing=${codeClothing}`);
+            console.log('Updated Clothing');
+            await pool.query(`update size_clothes set price=cast(${cost} as decimal(12,2)), discount=cast(${discount} as decimal(12,2)) where code_clothing=${codeClothing} and id_size=${idSize}`);
+            console.log('update price and discount');
+            return true;
+        } catch (error) {
+            console.log("Error in update clothing", error);
+            return false;
+        }
+    },
+
+    async enableDisableClothing(codeClothing){
+        try {
+            await pool.query(`update clothing set estatus = not estatus where code_clothing=${codeClothing}`);
+            return true;
+        } catch (error) {
+            console.log("Error in ebale disbale clothing", error);
+            return false;
         }
     }
 }
