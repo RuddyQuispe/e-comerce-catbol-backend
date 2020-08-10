@@ -82,16 +82,23 @@ begin
 	end if;
 end $BODY$ language plpgsql;
 
-create or replace function register_cloting_group(code_clothing_super_i integer, code_clothing_sub_i integer, quantity_i smallint )returns boolean as
+create or replace function register_cloting_group(code_clothing_super_i integer, code_clothing_sub_i integer)returns boolean as
 $BODY$
+declare exists_clothing_group integer = (select count(*) from clothing_group where code_clothing_super=code_clothing_super_i and code_clothing_sub=code_clothing_sub_i);
 begin 
-	if (code_clothing_super_i<>code_clothing_sub_i) then 
-		insert into clothing_group(code_clothing_super, code_clothing_sub, quantity) values (code_clothing_super_i, code_clothing_sub_i, quantity_i);
+	if (exists_clothing_group>0) then
+		update clothing_group set quantity=quantity+1 where code_clothing_super=code_clothing_super_i and code_clothing_sub=code_clothing_sub_i;
 		return true;
-	else 
-		return false;
+	else
+		if (code_clothing_super_i<>code_clothing_sub_i) then 
+			insert into clothing_group(code_clothing_super, code_clothing_sub, quantity) values (code_clothing_super_i, code_clothing_sub_i, cast(1 as smallint));
+			return true;
+		else 
+			return false;
+		end if;	
 	end if;
 end $BODY$ language plpgsql;
+
 
 create or replace function register_category(name_i text, description_i text, type_i boolean, status_i boolean)returns integer as 
 $BODY$

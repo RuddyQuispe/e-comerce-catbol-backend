@@ -1,5 +1,4 @@
 const clothingModel = require('../../models/ClothingManage/clothingManage.model');
-const { json } = require('express');
 
 const getClothingManage = async (req, res) => {
     const clothingList = await clothingModel.getListClothing();
@@ -65,10 +64,45 @@ const putEnableDisable = async (req, res) => {
     }
 }
 
+const getClothingGroup = async (req, res) => {
+    const {code} = req.params;
+    const listGroupClothing = await clothingModel.getListClothingSubGroup(code);
+    const clothingData = await clothingModel.getClothingDataOnly(code);
+     res.json({
+        list_clothing_group : listGroupClothing,
+        clothing_data : clothingData
+     });
+}
+
+const postClothingGroup = async (req, res) => {
+    console.log(req.params, req.body);
+    const {list_code_clothing} = req.body;
+    let value = true;
+    for (let index = 0; index < list_code_clothing.length; index++) {
+        if (await clothingModel.registerClothingGroup(req.params.code, list_code_clothing[index])) {
+            console.log(`register clothing group SUPER ${req.params.code} SUB: ${list_code_clothing[index]} successfully`);
+        }else{
+            value = false;
+            console.log(`Error clothing group SUPER ${req.params.code} SUB: ${list_code_clothing[index]} Error.`);
+        }
+    }
+    if (value) {
+        res.json({
+            message : `Las prendas ha sido registradas al conjunto correctamente`
+        });
+    }else{
+        res.json({
+            message : `Alguna prendas no han sido registradas correctamente`
+        });
+    }
+}
+
 module.exports= {
     postClothing,
     getClothingManage,
     getPutClothing,
     putClothing,
-    putEnableDisable
+    putEnableDisable,
+    getClothingGroup,
+    postClothingGroup
 }

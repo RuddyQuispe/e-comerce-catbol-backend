@@ -72,5 +72,35 @@ module.exports = {
             console.log("Error in ebale disbale clothing", error);
             return false;
         }
+    },
+
+    async getListClothingSubGroup(codeClothing){
+        try {
+            const response = await pool.query(`select code_clothing, description, characterists, image_name, color, estatus, false as checked from clothing where code_clothing<>${codeClothing} and code_clothing not in (select distinct code_clothing_super from clothing_group)`);
+            return response.rows;
+        } catch (error) {
+            console.log("Error in get clothing Group", error);
+            return null;
+        }
+    },
+
+    async getClothingDataOnly(codeClothing) {
+        try {
+            const response = await pool.query(`select code_clothing, description, image_name, characterists, color, estatus from clothing where code_clothing=${codeClothing}`);
+            return response.rows[0];
+        } catch (error) {
+            console.log("Error in get Data pnly clothing", error);
+            return null;
+        }
+    },
+
+    async registerClothingGroup(codeClothingSuper, codeClothingSub){
+        try {
+            const response = await pool.query(`select register_cloting_group(${codeClothingSuper}, ${codeClothingSub})`);
+            return response.rows[0].register_cloting_group;
+        } catch (error) {
+            console.log("Error in register clothing Group: CODES:", codeClothingSuper, codeClothingSub, error);
+            return false;
+        }
     }
 }

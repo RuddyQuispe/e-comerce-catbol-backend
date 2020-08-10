@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const {getCategoryManage, postCategory, postEnableDisable} = require('../../controllers/ClothingManage/categoryManage.controller');
+
+router.get('/clothing_manage/category_manage', getCategoryManage);
+
+router.post('/clothing_manage/category_manage', postCategory);
+
+router.post('/clothing_manage/category_manage/enable_disable', postEnableDisable);
+
+module.exports = router;
