@@ -102,5 +102,15 @@ module.exports = {
             console.log("Error in register clothing Group: CODES:", codeClothingSuper, codeClothingSub, error);
             return false;
         }
+    },
+
+    async getClothesToAssignCategory(idCategory){
+        try {
+            const response = await pool.query(`select code_clothing, image_name, description, characterists, color, estatus, container_clothing(code_clothing, cast(${idCategory} as smallint)) from clothing order by code_clothing`);
+            return response.rows;
+        } catch (error) {
+            console.log("Error in clothing with ID: ",idCategory, error);
+            return null;
+        }
     }
 }

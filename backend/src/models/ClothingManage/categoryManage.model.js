@@ -29,5 +29,35 @@ module.exports = {
             console.log("Error in enabe disable category"+idCategory, error);
             return false;
         }
+    },
+
+    async getDataCategory(idCategory){
+        try {
+            const response = await pool.query(`select id_category, "name", description, "type", status from category where id_category=${idCategory}`);
+            return response.rows[0];
+        } catch (error) {
+            console.log("Get Error Data category ID"+ idCategory, error);
+            return null;
+        }
+    },
+
+    async registerCategoryClothes(codeClothing, idCategory){
+        try {
+            const response = await pool.query(`select register_clothing_category(${codeClothing}, cast(${idCategory} as smallint))`);
+            return response.rows[0].register_clothing_category;
+        } catch (error) {
+            console.log(`Error in register category ${idCategory} and Clothes ${codeClothing}`, error);
+            return false;
+        }
+    },
+
+    async removeCategoryClothes(codeClothing, idCategory){
+        try {
+            const response = await pool.query(`select remove_clothing_category(${codeClothing}, cast(${idCategory} as smallint))`);
+            return response.rows[0].remove_clothing_category;
+        } catch (error) {
+            console.log(`Error in register category ${idCategory} and Clothes ${codeClothing}`, error);
+            return false;
+        }
     }
 }

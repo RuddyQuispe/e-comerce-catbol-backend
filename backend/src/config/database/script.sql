@@ -87,18 +87,6 @@ create table category(
 	status boolean not null
 );
 
-create table super_category(
-	id_category_super smallint not null,
-	id_category_sub smallint not null,
-	primary key (id_category_super, id_category_sub),
-	foreign key (id_category_super) references category(id_category)
-	on update cascade
-	on delete cascade,
-	foreign key (id_category_sub) references category(id_category)
-	on update cascade
-	on delete cascade
-);
-
 create table clothes_category(
 	code_clothing integer references clothing
 	on update cascade
@@ -223,8 +211,6 @@ select register_cloting_group(1, 5, cast(5 as smallint));
 select register_category('Varones', 'Ropa para varones', true, true);
 select register_category('Damas', 'Ropa para mujeres', true, true);
 select register_category('Black Friday', 'Ofertas desde 20% hasta 70% de descuento', false, true);
-
-select register_sub_category(cast(3 as smallint), cast(1 as smallint));
 
 select register_new_cupon('30-08-2020', cast(20 as decimal(12,2)));
 

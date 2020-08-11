@@ -1,4 +1,5 @@
 const categoryModel = require('../../models/ClothingManage/categoryManage.model');
+const clothingModel = require('../../models/ClothingManage/clothingManage.model');
 
 const getCategoryManage = async (req, res) => {
     const categoryList = await categoryModel.getListCategory();
@@ -28,7 +29,43 @@ const postEnableDisable = async  (req, res) => {
         });
     } else {
         res.json({
-            message : `Categoría #${id_category} tuvvo problemas de cambiar su estado`
+            message : `Categoría #${id_category} tuvo problemas de cambiar su estado`
+        });
+    }
+}
+
+const getListCategoryClothing = async (req, res) => {
+    const {cod_category} = req.params;
+    const categoryData = await categoryModel.getDataCategory(cod_category);
+    const clothing_list = await clothingModel.getClothesToAssignCategory(cod_category);
+    res.json({
+        category_data : categoryData,
+        clothing_list : clothing_list
+    });
+}
+
+const postAddClothingCategory = async (req, res) => {
+    const {code_clothing} = req.body;
+    if (await categoryModel.registerCategoryClothes(code_clothing, req.params.cod_category)) {
+        res.json({
+            message : `Ropa ${code_clothing} Agregada a la Categoria ${req.params.cod_category} correctamente`
+        });
+    }else{
+        res.json({
+            message : `Ropa ${code_clothing} no Agregada a la Categoria ${req.params.cod_category}. Hubo Problemas`
+        });
+    }
+}
+
+const postRemoveClothingCategory = async (req, res) => {
+    const {code_clothing} = req.body;
+    if (await categoryModel.removeCategoryClothes(code_clothing, req.params.cod_category)) {
+        res.json({
+            message : `Ropa ${code_clothing} Eliminada de la Categoria ${req.params.cod_category} correctamente`
+        });
+    }else{
+        res.json({
+            message : `Ropa ${code_clothing} no eliminada de la Categoria ${req.params.cod_category}. Hubo Problemas`
         });
     }
 }
@@ -36,5 +73,8 @@ const postEnableDisable = async  (req, res) => {
 module.exports = {
     getCategoryManage,
     postCategory,
-    postEnableDisable
+    postEnableDisable,
+    getListCategoryClothing,
+    postAddClothingCategory,
+    postRemoveClothingCategory
 }

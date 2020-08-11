@@ -113,11 +113,24 @@ begin
 	end if;
 end $BODY$ language plpgsql;
 
-create or replace function register_sub_category(id_category_super_i smallint, id_category_sub_i smallint) returns boolean as
+create or replace function register_clothing_category(code_clothing_i integer, id_category_i smallint) returns boolean as 
 $BODY$
+declare exists_link integer = (select count(*) from clothes_category where code_clothing=code_clothing_i and id_category=id_category_i);
 begin 
-	if (id_category_super_i<>id_category_sub_i)then 
-		insert into super_category(id_category_super, id_category_sub) values (id_category_super_i, id_category_sub_i);
+	if (exists_link=0) then
+		insert into clothes_category(code_clothing, id_category) values (code_clothing_i, id_category_i);
+		return true;
+	else
+		return false;
+	end if;
+end $BODY$ language plpgsql;
+
+create or replace function remove_clothing_category(code_clothing_i integer, id_category_i smallint) returns boolean as 
+$BODY$
+declare exists_link integer = (select count(*) from clothes_category where code_clothing=code_clothing_i and id_category=id_category_i);
+begin 
+	if (exists_link>0) then
+		delete from clothes_category where code_clothing=code_clothing_i and id_category=id_category_i;
 		return true;
 	else
 		return false;
