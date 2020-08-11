@@ -40,6 +40,7 @@ app.use(require('./routes/InventoryShoppingManage/bitacoraManage.route'));
 app.use(require('./routes/ClothingManage/sizeManage.route'));
 app.use(require('./routes/ClothingManage/clothingManage.route'));
 app.use(require('./routes/ClothingManage/categoryManage.route'));
+app.use(require('./routes/ShoppingCartManage/shoppingManage.route'));
 
 
 module.exports = app;
