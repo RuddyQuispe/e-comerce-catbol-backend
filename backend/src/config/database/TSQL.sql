@@ -137,6 +137,17 @@ begin
 	end if;
 end $BODY$ language plpgsql;
 
+create or replace function container_clothing(code_clothing_v integer, id_category_v smallint) returns boolean as 
+$BODY$
+declare exists_relation integer = (select count(*) from clothes_category where code_clothing=code_clothing_v and id_category=id_category_v);
+begin 
+	if (exists_relation>0) then
+		return true;
+	else
+		return false;
+	end if;
+end; $BODY$ language plpgsql;
+
 create or replace function register_new_cupon(limit_date_i date, discount_i decimal(12,2))returns smallint as 
 $BODY$
 declare code smallint;
