@@ -105,5 +105,31 @@ module.exports = {
             console.log("Error in search user", error);
             return false;
         }
+    },
+
+    async getReportClientFrequent(){
+        try {
+            const response = await pool.query(`select cu.ci, cu.first_name, cu.last_name, count(distinct i.invoice_no) as count_sale_note from client_user cu, shopping_cart sc, sale_note sn, invoice i where cu.ci=sc.ci and sc.id_shopping_cart=sn.id_shopping_cart and sn.code_sale=i.code_sale group by cu.ci`);
+            return response.rows;
+        } catch (error) {
+            console.log("Error in get report client frequent", error);
+            return null;
+        }
+    },
+
+    async getReportPayment(){
+        try {
+            const responseDelivery = await pool.query(`select get_report_payment_delivery()`);
+            const responseWeb = await pool.query(`select get_report_payment_web()`);
+            return [
+                {
+                    payment_web : responseWeb.rows[0].get_report_payment_web,
+                    payment_delivery : responseDelivery.rows[0].get_report_payment_delivery
+                }
+            ];
+        } catch (error) {
+            console.log("Error in get Report Payment", error);
+            return 
+        }
     }
 }

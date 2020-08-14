@@ -333,3 +333,15 @@ begin
 		 end if;
 	end if;
 end $BODY$ language plpgsql;
+
+create or replace function get_report_payment_web()returns integer as 
+$BODY$
+begin 
+	return (select count(distinct code_sale) from sale_note	where payment_type );
+end $BODY$ language plpgsql;
+
+create or replace function get_report_payment_delivery()returns integer as 
+$BODY$
+begin 
+	return (select count(distinct code_sale) from sale_note	where not payment_type );
+end $BODY$ language plpgsql;

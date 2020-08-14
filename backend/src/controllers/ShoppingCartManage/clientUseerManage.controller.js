@@ -1,4 +1,5 @@
 const clientUserModel = require('../../models/ShoppingCartManage/clientUserManage.model');
+const shoppingManageModel = require('../../models/ShoppingCartManage/shoppingManage.model');
 
 const getClientUserManage = async (req, res) => {
     const listClientUser = await clientUserModel.getListUser();
@@ -30,8 +31,26 @@ const putEnableDisableClientUser = async (req, res) => {
     }
 } 
 
+const getReportClientFrequent = async (req, res) => {
+    const reportClientFrequent = await clientUserModel.getReportClientFrequent();
+    res.json(reportClientFrequent);
+}
+
+const getReportPayment = async (req, res) => {
+    const reportPayment = await clientUserModel.getReportPayment();
+    res.json(reportPayment);
+}
+
+const getReportShoppingSale = async (req, res) => {
+    const listReport = await shoppingManageModel.getReportDateSale();
+    res.json(listReport);
+}
+
 module.exports = {
     getClientUserManage,
     postClientUser,
-    putEnableDisableClientUser
+    putEnableDisableClientUser,
+    getReportClientFrequent,
+    getReportPayment,
+    getReportShoppingSale
 }
