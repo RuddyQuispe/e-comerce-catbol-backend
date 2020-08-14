@@ -41,6 +41,9 @@ app.use(require('./routes/ClothingManage/sizeManage.route'));
 app.use(require('./routes/ClothingManage/clothingManage.route'));
 app.use(require('./routes/ClothingManage/categoryManage.route'));
 app.use(require('./routes/ShoppingCartManage/shoppingManage.route'));
-
+app.use(require('./routes/ShoppingCartManage/clientUserManage.route'));
+app.use(require('./routes/ShoppingCartManage/deliveryStaffManage.route'));
+app.use(require('./routes/ShoppingCartManage/couponManage.route'));
+    
 
 module.exports = app;

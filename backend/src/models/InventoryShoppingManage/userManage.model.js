@@ -2,7 +2,6 @@ const pool = require('../../database');
 const fs = require('fs');
 const bcryptjs = require('bcryptjs');
 const path = require('path');
-const { getUpdateUser } = require('../../controllers/InventoryShoppingManage/userManage.controller');
 
 async function verifyPassword(id ,password){
     try {
@@ -20,6 +19,42 @@ async function verifyPassword(id ,password){
     } catch (error) {
         console.log(error);
         return -1;
+    }
+}
+
+async function writePassword(id, newPassword){
+    try {
+        const json_password = await fs.readFileSync(path.join(__dirname,'../../../../security/password.json'), 'utf-8');
+        let listPassword = await JSON.parse(json_password);
+        let newListPassword = [];
+        for (let index = 0; index < listPassword.length; index++) {
+            if (listPassword[index].id == id) {
+                console.log("pise", listPassword[index].type);
+                let jsonDataNew = {
+                    "id": id,
+                    "pass": await encryptPassword(newPassword),
+                    "type": listPassword[index].type
+                }
+                await newListPassword.push(jsonDataNew);
+            }else{
+                await newListPassword.push(listPassword[index]);
+            }
+        }
+        const json_write = JSON.stringify(newListPassword);
+        const response = await fs.writeFile(path.join(__dirname,'../../../../security/password.json'), json_write, error => {
+            if (error) {
+                console.error("Error in write passwordOwner.json");
+                console.log(error);
+                return false;
+            } else {
+                console.log('successfully writing to passwordOwner.json');
+                return true;
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+        return false;
     }
 }
 
@@ -138,6 +173,35 @@ module.exports = {
             return true;
         } catch (error) {
             console.log(error);
+            return false;
+        }
+    },
+
+    async existsUser(email) {
+        try {
+            const response = await pool.query(`select count(*) from "user" where email='${email}'`);
+            return response.rows[0].count>0? true : false;
+        } catch (error) {
+            console.log("Error in search user", error);
+            return false;
+        }
+    },
+
+    async saveNewPassword(email, newPassword){
+        try {
+            const response = await pool.query(`select getIdUser('${email}')`);
+            console.log("id or CI", response.rows[0].getiduser);
+            if (response.rows[0].getiduser==-1) {
+                console.log("ninguno");
+                return false;
+            } else {
+                console.log("aaaaaa");
+                const userData = await writePassword(response.rows[0].getiduser, newPassword);
+                console.log("us", userData);
+                return true;
+            }
+        } catch (error) {
+            console.log(error, "error in login");
             return false;
         }
     }
