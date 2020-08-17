@@ -162,14 +162,17 @@ create table sale_note(
 	city text not null,
 	status_sale boolean not null,		--true: completed : false : in process
 	payment_type boolean not null,			--true: web : false delivery time
-	id_user integer not null,
+	id_user integer null,
+	corporate text not null,
+	nit text not null,
+	code_delivery smallint null,
 	foreign key (id_user) references "user"(id)
 	on update cascade
 	on delete cascade,
 	id_shopping_cart integer references shopping_cart
 	on update cascade 
 	on delete cascade,
-	code_delivery smallint references delivery_staff
+	foreign key (code_delivery) references delivery_staff(code_delivery)
 	on update cascade 
 	on delete cascade
 );

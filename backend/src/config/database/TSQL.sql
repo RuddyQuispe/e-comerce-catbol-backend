@@ -194,19 +194,25 @@ begin
 	return code_shopping;
 end $BODY$ language plpgsql;
 
-create or replace function add_clothing_to_shopping_cart(code_clothing_i integer, id_size_i smallint, id_shopping_cart_i integer, quantity_i smallint)returns boolean as 
+create or replace function add_clothing_to_shopping_cart(code_clothing_i integer, id_size_i smallint, id_shopping_cart_i integer)returns boolean as 
 $BODY$
 declare enable_clothing boolean = (select estatus from clothing where code_clothing=code_clothing_i);
 		stock_available smallint = (select stock from size_clothes where code_clothing=code_clothing_i and id_size=id_size_i);
 		discount_g decimal(12,2) = (select discount from size_clothes where id_size=id_size_i and code_clothing=code_clothing_i);
 		price_g decimal(12,2) = (select price from size_clothes where id_size=id_size_i and code_clothing=code_clothing_i);
 		cost_subtotal decimal(12,2);
+		exists_clothing integer = (select count(*) from shopping_list where id_shopping_cart=id_shopping_cart_i and id_size=id_size_i and code_clothing=code_clothing_i);
 begin 
-	if (enable_clothing and stock_available>=quantity_i) then 
-		cost_subtotal = price_g*quantity_i;
+	if (enable_clothing and stock_available>=1) then
+		cost_subtotal = price_g*1;
 		cost_subtotal = (cost_subtotal/100)*discount_g;
-		insert into shopping_list(code_clothing, id_size, id_shopping_cart, quantity, subtotal) values (code_clothing_i, id_size_i, id_shopping_cart_i, quantity_i, price_g-cost_subtotal);
-		return true;
+		if (exists_clothing=0) then 
+			insert into shopping_list(code_clothing, id_size, id_shopping_cart, quantity, subtotal) values (code_clothing_i, id_size_i, id_shopping_cart_i, cast(1 as smallint), price_g-cost_subtotal);
+			return true;
+		else 
+			update shopping_list set quantity=quantity+1, subtotal=subtotal+price_g-cost_subtotal where id_shopping_cart=id_shopping_cart_i and id_size=id_size_i and code_clothing=code_clothing_i;
+			return true;
+		end if;
 	else
 		return false;
 	end if;
@@ -225,12 +231,12 @@ begin
 	end if;
 end $BODY$ language plpgsql;
 
-create or replace function register_sale_note(address_send_i text, no_home_i smallint, province_i text, city_i text, payment_type_i boolean, id_user_i integer, id_shopping_cart_i integer, code_delivery_i smallint)returns integer as 
+create or replace function register_sale_note(address_send_i text, no_home_i smallint, province_i text, city_i text, payment_type_i boolean, id_shopping_cart_i integer, corporate_i text, nit_i text)returns integer as 
 $BODY$
 declare code integer;
 begin 
-	insert into sale_note(address_send, no_home, province, city, status_sale, payment_type, id_user, id_shopping_cart, code_delivery) values 
-						(address_send_i, no_home_i, province_i, city_i, false, payment_type_i, id_user_i, id_shopping_cart_i, code_delivery_i) returning code_sale into code;
+	insert into sale_note(address_send, no_home, province, city, status_sale, payment_type, id_user, id_shopping_cart, code_delivery, corporate, nit) values 
+						(address_send_i, no_home_i, province_i, city_i, false, payment_type_i, null, id_shopping_cart_i, null, corporate_i, nit_i) returning code_sale into code;
 	return code;
 end $BODY$ language plpgsql;
 
@@ -344,4 +350,16 @@ create or replace function get_report_payment_delivery()returns integer as
 $BODY$
 begin 
 	return (select count(distinct code_sale) from sale_note	where not payment_type );
+end $BODY$ language plpgsql;
+
+create or replace function get_user_assigned(id_user integer) returns text as 
+$BODY$
+begin 
+	return (select username from "user" where id=id_user);
+end $BODY$ language plpgsql;
+
+create or replace function get_delivery_assigned(code_delivery_v smallint) returns text as 
+$BODY$
+begin 
+	return (select "name" from delivery_staff where code_delivery=code_delivery_v);
 end $BODY$ language plpgsql;
