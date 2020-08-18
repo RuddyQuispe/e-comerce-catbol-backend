@@ -25,9 +25,9 @@ const getSaleNoteManageList = async (req, res) => {
 }
 
 const postSaleNoteManageConclusion = async (req, res) => {
-    const {address_send, home_no, province, city, id_shopping_cart, corporate, nit} = req.body;
+    const {address_send, home_no, province, city, id_shopping_cart, corporate, nit, person_receive} = req.body;
     console.log(req.body);
-    const idSaleNote = await saleNoteModel.registerSaleNote(address_send, home_no, province, city, false, id_shopping_cart, corporate, nit);
+    const idSaleNote = await saleNoteModel.registerSaleNote(address_send, home_no, province, city, false, id_shopping_cart, corporate, nit, person_receive);
     if (idSaleNote>0) {
         res.json({
             message : `La nota Nro. ${idSaleNote} se registro correctamente a su nombre. porfavor espere su factura en la entrega delivery`

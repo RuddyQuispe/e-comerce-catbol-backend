@@ -45,6 +45,7 @@ app.use(require('./routes/ShoppingCartManage/clientUserManage.route'));
 app.use(require('./routes/ShoppingCartManage/deliveryStaffManage.route'));
 app.use(require('./routes/ShoppingCartManage/couponManage.route'));
 app.use(require('./routes/ShoppingCartManage/saleNoteManage.route'));
+app.use(require('./routes/ShoppingCartManage/invoiceManage.route'));
     
 
 module.exports = app;

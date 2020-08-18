@@ -166,6 +166,7 @@ create table sale_note(
 	corporate text not null,
 	nit text not null,
 	code_delivery smallint null,
+	person_receive text not null,
 	foreign key (id_user) references "user"(id)
 	on update cascade
 	on delete cascade,
@@ -180,6 +181,7 @@ create table sale_note(
 create table invoice(
 	invoice_no serial primary key,
 	total_cost decimal(12,2) not null,
+	send_cost decimal(12,2) not null,
 	iva_tax decimal(12,2) not null,
 	code_sale integer references sale_note
 	on update cascade

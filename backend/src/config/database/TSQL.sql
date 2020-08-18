@@ -194,23 +194,18 @@ begin
 	return code_shopping;
 end $BODY$ language plpgsql;
 
-create or replace function add_clothing_to_shopping_cart(code_clothing_i integer, id_size_i smallint, id_shopping_cart_i integer)returns boolean as 
+create or replace function add_clothing_to_shopping_cart(code_clothing_i integer, id_size_i smallint, id_shopping_cart_i integer, cost_subtotal decimal(12,2))returns boolean as 
 $BODY$
 declare enable_clothing boolean = (select estatus from clothing where code_clothing=code_clothing_i);
 		stock_available smallint = (select stock from size_clothes where code_clothing=code_clothing_i and id_size=id_size_i);
-		discount_g decimal(12,2) = (select discount from size_clothes where id_size=id_size_i and code_clothing=code_clothing_i);
-		price_g decimal(12,2) = (select price from size_clothes where id_size=id_size_i and code_clothing=code_clothing_i);
-		cost_subtotal decimal(12,2);
 		exists_clothing integer = (select count(*) from shopping_list where id_shopping_cart=id_shopping_cart_i and id_size=id_size_i and code_clothing=code_clothing_i);
 begin 
 	if (enable_clothing and stock_available>=1) then
-		cost_subtotal = price_g*1;
-		cost_subtotal = (cost_subtotal/100)*discount_g;
 		if (exists_clothing=0) then 
-			insert into shopping_list(code_clothing, id_size, id_shopping_cart, quantity, subtotal) values (code_clothing_i, id_size_i, id_shopping_cart_i, cast(1 as smallint), price_g-cost_subtotal);
+			insert into shopping_list(code_clothing, id_size, id_shopping_cart, quantity, subtotal) values (code_clothing_i, id_size_i, id_shopping_cart_i, cast(1 as smallint), cost_subtotal);
 			return true;
 		else 
-			update shopping_list set quantity=quantity+1, subtotal=subtotal+price_g-cost_subtotal where id_shopping_cart=id_shopping_cart_i and id_size=id_size_i and code_clothing=code_clothing_i;
+			update shopping_list set quantity=quantity+1, subtotal=subtotal+cost_subtotal where id_shopping_cart=id_shopping_cart_i and id_size=id_size_i and code_clothing=code_clothing_i;
 			return true;
 		end if;
 	else
@@ -231,12 +226,12 @@ begin
 	end if;
 end $BODY$ language plpgsql;
 
-create or replace function register_sale_note(address_send_i text, no_home_i smallint, province_i text, city_i text, payment_type_i boolean, id_shopping_cart_i integer, corporate_i text, nit_i text)returns integer as 
+create or replace function register_sale_note(address_send_i text, no_home_i smallint, province_i text, city_i text, payment_type_i boolean, id_shopping_cart_i integer, corporate_i text, nit_i text, person_receive_i text)returns integer as 
 $BODY$
 declare code integer;
 begin 
-	insert into sale_note(address_send, no_home, province, city, status_sale, payment_type, id_user, id_shopping_cart, code_delivery, corporate, nit) values 
-						(address_send_i, no_home_i, province_i, city_i, false, payment_type_i, null, id_shopping_cart_i, null, corporate_i, nit_i) returning code_sale into code;
+	insert into sale_note(address_send, no_home, province, city, status_sale, payment_type, id_user, id_shopping_cart, code_delivery, corporate, nit, person_receive) values 
+						(address_send_i, no_home_i, province_i, city_i, false, payment_type_i, null, id_shopping_cart_i, null, corporate_i, nit_i, person_receive_i) returning code_sale into code;
 	return code;
 end $BODY$ language plpgsql;
 
@@ -247,7 +242,7 @@ declare have_coupon integer = (select count(*) from coupon_list where ci_client_
 		discount_g decimal(12,2);
 begin
 	if (have_coupon>0) then
-		date_last = (select c.limit_date from coupon_list cl, coupon c where cl.coupon_code=c.coupon_code and cl.ci_client_user=ci_user_client order by c.limit_date desc);
+		date_last = (select c.limit_date from coupon_list cl, coupon c where cl.coupon_code=c.coupon_code and cl.ci_client_user=ci_user_client order by c.limit_date desc limit 1);
 		if (date_last>=now()) then
 			discount_g = (select discount from coupon where limit_date=date_last limit 1);
 			return discount_g;
@@ -259,17 +254,11 @@ begin
 	end if;
 end $BODY$ language plpgsql;
 
-create or replace function register_invoice(code_sale_i integer)returns integer as 
+create or replace function register_invoice(code_sale_i integer, cost_total_i decimal(12,2), iva_tax_i decimal(12,2), send_cost_i decimal(12,2))returns integer as 
 $BODY$
-declare total_cost_g decimal(12,2) = (select sum(sl.subtotal) from sale_note sn, shopping_cart sc, shopping_list sl where sn.id_shopping_cart=sc.id_shopping_cart and sc.id_shopping_cart=sl.id_shopping_cart);
-		ci_client integer = (select sc2.ci from sale_note sn, shopping_cart sc2 where sc2.id_shopping_cart=sn.id_shopping_cart and sn.code_sale=code_sale_i);
-		discount_g decimal(12,2) = get_discount_last_coupon(ci_client);
-		iva decimal(12,2);
-		no_invoice_g integer;
-begin 
-	total_cost_g = total_cost_g-discount_g;
-	iva = (total_cost_g/100)*13;
-	insert into invoice(total_cost, iva_tax, code_sale) values (total_cost_g, iva, code_sale_i) returning invoice_no into no_invoice_g;
+declare no_invoice_g integer;
+begin
+	insert into invoice(total_cost, iva_tax, code_sale, send_cost) values (cost_total_i, iva_tax_i, code_sale_i, send_cost_i) returning invoice_no into no_invoice_g;
 	return no_invoice_g;
 end $BODY$ language plpgsql;
 

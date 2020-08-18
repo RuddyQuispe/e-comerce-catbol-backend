@@ -11,9 +11,9 @@ module.exports = {
         }
     },
 
-    async registerSaleNote(addressSend, noHome, province, city, paymentType, idShoppingCart, corporate, nit){
+    async registerSaleNote(addressSend, noHome, province, city, paymentType, idShoppingCart, corporate, nit, person_receive){
         try {
-            console.log(addressSend, noHome, province, city, paymentType, idShoppingCart, corporate, nit);
+            console.log(addressSend, noHome, province, city, paymentType, idShoppingCart, corporate, nit, person_receive);
             const response = await pool.query(`select register_sale_note('${addressSend}', cast(${noHome} as smallint), '${province}', '${city}', ${paymentType}, ${idShoppingCart}, '${corporate}', '${nit}')`);
             return response.rows[0].register_sale_note;
         } catch (error) {
@@ -49,6 +49,36 @@ module.exports = {
         } catch (error) {
             console.log("Error in conclusion sale note", error);
             return false;
+        }
+    },
+
+    async getOwnerSaleNote(codeSale){
+        try {
+            const response = await pool.query(`select sc2.ci from sale_note sn, shopping_cart sc2 where sc2.id_shopping_cart=sn.id_shopping_cart and sn.code_sale=${codeSale}`);
+            return response.rows[0].ci;
+        } catch (error) {
+            console.log("Error in get owner sale note", error);
+            return -1;
+        }
+    },
+
+    async getTotalCost(codeSale){
+        try {
+            const response = await pool.query(`select sum(sl.subtotal) from sale_note sn, shopping_cart sc, shopping_list sl where sn.id_shopping_cart=sc.id_shopping_cart and sc.id_shopping_cart=sl.id_shopping_cart and sn.code_sale=${codeSale}`);
+            return response.rows[0].sum;
+        } catch (error) {
+            console.log("Error in get Total Cost Sale note", error);
+            return 0;
+        }
+    },
+
+    async getCitySaleNoteToSend(codeSale){
+        try {
+            const response = await pool.query(`select city from sale_note where code_sale=${codeSale}`);
+            return response.rows[0].city;
+        } catch (error) {
+            console.log("Error in get Total Cost Sale note", error);
+            return 0;
         }
     }
 }

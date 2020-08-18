@@ -39,7 +39,10 @@ module.exports = {
 
     async registerShoppingList(codeClothing, idSize, idShoppingCart){
         try {
-            const response = await pool.query(`select add_clothing_to_shopping_cart(${codeClothing}, cast(${idSize} as smallint), ${idShoppingCart})`);
+            const dataEconomic = await pool.query(`select price, discount from size_clothes where code_clothing=${codeClothing} and id_size=${idSize}`);
+            var subTotal = parseFloat(dataEconomic.rows[0].price)/100*parseFloat(dataEconomic.rows[0].discount);
+            subTotal = dataEconomic.rows[0].price-parseFloat(subTotal);
+            const response = await pool.query(`select add_clothing_to_shopping_cart(${codeClothing}, cast(${idSize} as smallint), ${idShoppingCart}, cast(${subTotal} as decimal(12,2)))`);
             return response.rows[0].add_clothing_to_shopping_cart;
         } catch (error) {
             console.log("Error in register shopping list", error);
