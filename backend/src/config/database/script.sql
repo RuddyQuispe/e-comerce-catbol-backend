@@ -215,13 +215,13 @@ select register_provider(12345678, 'juan miguel saracho', '12345678', 'La salle 
 
 select register_note('Ingreso primera semana de julio', '2020-07-05', 1, 12345678);
 
-select register_clothing('T-Shirt Cuello V Bomber Amarillo', 'imagen_polera.jpg', 'Hombros caídos\nRemates de canalé\nInterior ligeramente cardado\nLargo de espalda en la talla M aprox. 72 cm', 'amarillo');
-select register_clothing('Camiseta funcional', 'imagen_polera.jpg', 'Producto a juego:2090290 - Leggings funcionales,Producto a juego: 2090355 - Top funcional,Aplique calado en los hombros,Detalle reflectante en la espalda,Largo de espalda en la talla S aprox. 61 cm', 'Azul/Blanco');
-select register_clothing('Camiseta de manga larga - Algodón orgánico', 'imagen_polera.jpg', 'Remates con costura doble', 'Azul oscuro');
-select register_clothing('Pantalón - Slim Fit', 'imagen_polera.jpg', 'Cinturilla con trabillas para el cinturón, botón y cremallera,Estilo de 5 bolsillos,Largo interior de pernera en la talla 32/32 aprox. 82 cm,Ancho de dobladillo en la talla 32/32 aprox. 34 cm', 'caqui');
-select register_clothing('Camiseta de manga corta - Algodón orgánico', 'imagen_polera.jpg', 'Parche con el logotipo en el dobladillo','Blanco');
-select register_clothing('Vestido', 'imagen_polera.jpg', 'Aplicación fruncida por detrás de tejido elástico', 'Fucsia');
-select register_clothing('Juego para niños', 'imagen_polera.jpg', 'Ropa para fiestas', 'Blanco y Azul');
+select register_clothing('T-Shirt Cuello V Bomber Amarillo', 'http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/11dfd908-e153-41c0-b021-f05969f64f80.jpg', 'Hombros caídos, Remates de canalé, Interior ligeramente cardado, Largo de espalda en la talla M aprox. 72 cm', 'Amarillo');
+select register_clothing('Camiseta funcional', 'http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/a513fbd5-77a8-40ad-8969-ec8646643326.jpg', 'Producto a juego:2090290 - Leggings funcionales,Producto a juego: 2090355 - Top funcional,Aplique calado en los hombros,Detalle reflectante en la espalda,Largo de espalda en la talla S aprox. 61 cm', 'Azul/Blanco');
+select register_clothing('Camiseta de manga larga - Algodón orgánico', 'http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/manga_larga.jpg', 'Remates con costura doble', 'Azul oscuro');
+select register_clothing('Pantalón - Slim Fit', 'http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/pantalon_slim.jpg', 'Cinturilla con trabillas para el cinturón, botón y cremallera,Estilo de 5 bolsillos,Largo interior de pernera en la talla 32/32 aprox. 82 cm,Ancho de dobladillo en la talla 32/32 aprox. 34 cm', 'caqui');
+select register_clothing('Camiseta de manga corta - Algodón orgánico', 'http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/4a8eafda-579e-42d4-8668-a119e6cafc91.jpg', 'Parche con el logotipo en el dobladillo','Blanco');
+select register_clothing('Vestido', 'http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/ce53429b-b16a-4b3f-8526-ed41ef088b9d.jpg', 'Aplicación fruncida por detrás de tejido elástico', 'Fucsia');
+select register_clothing('Juego para niños', 'http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/conjunto_ninio.jpg', 'Ropa para fiestas', 'Blanco y Azul');
 
 select register_size('L');
 select register_size('M');
@@ -230,8 +230,8 @@ select register_size('XL');
 select register_size('P');
 select register_size('XXL');
 
-select register_cloting_group(1, 4, cast(5 as smallint));
-select register_cloting_group(1, 5, cast(5 as smallint));
+select register_cloting_group(7, 8);
+select register_cloting_group(7, 9);
 
 select register_category('Varones', 'Ropa para varones', true, true);
 select register_category('Damas', 'Ropa para mujeres', true, true);
@@ -258,15 +258,17 @@ select register_size_clothes(cast(1 as smallint), 5, cast(75 as decimal(12,2)), 
 select register_size_clothes(cast(2 as smallint), 5, cast(75 as decimal(12,2)), cast(0 as decimal(12,2)));
 select register_size_clothes(cast(3 as smallint), 6, cast(200 as decimal(12,2)), cast(0 as decimal(12,2)));
 select register_size_clothes(cast(5 as smallint), 7, cast(250 as decimal(12,2)), cast(10 as decimal(12,2)));
+select register_size_clothes(cast(5 as smallint), 8, cast(100 as decimal(12,2)), cast(0 as decimal(12,2)));
+select register_size_clothes(cast(5 as smallint), 9, cast(200 as decimal(12,2)), cast(0 as decimal(12,2)));
  
 update size_clothes set stock=20
 
-select add_clothing_to_shopping_cart(1, cast(1 as smallint), 1, cast(1 as smallint));
-select add_clothing_to_shopping_cart(2, cast(1 as smallint), 1, cast(2 as smallint));
-select add_clothing_to_shopping_cart(5, cast(2 as smallint), 1, cast(1 as smallint));
+select add_clothing_to_shopping_cart(1, cast(1 as smallint), 1, cast(58 as decimal(12,2)));
+select add_clothing_to_shopping_cart(2, cast(1 as smallint), 1, cast(60 as decimal(12,2)));
+select add_clothing_to_shopping_cart(5, cast(2 as smallint), 1, cast(75 as decimal(12,2)));
 
 select register_delivery('Joan Mosquera', 'Motocicleta Yamaha color Verde, placa EUS-1234');
 
-select register_sale_note('Los tusequis, c. los andes #223', cast(223 as smallint), 'warnes', 'warnes', true, 1, 1, cast(1 as smallint));
+select register_sale_note('Los tusequis, c. los andes #223', cast(223 as smallint), 'Warnes', 'Warnes', true, 1, 'YPFB Bolivia', '456871234956', 'Abraham Robles');
 
-select register_invoice(1);
+select register_invoice(1, cast(258.09 as decimal(12,2)), cast(25.09 as decimal(12,2)), cast(40 as decimal(12,2)));
