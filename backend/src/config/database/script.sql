@@ -1,3 +1,22 @@
+/*
+CREATE ROLE catbol
+	WITH
+	LOGIN
+	SUPERUSER
+	CREATEDB
+	CREATEROLE
+	INHERIT
+	REPLICATION
+	CONNECTION LIMIT -1
+	PASSWORD '123456';
+
+CREATE DATABASE catbol
+	with owner=catbol
+	encoding='UTF8'
+	tablespace=pg_default
+	CONNECTION LIMIT=-1;
+*/
+
 create table "user" (
 	id serial primary key,
 	username text not null,
@@ -188,12 +207,13 @@ create table invoice(
 	on delete cascade
 );
 
+
 /** POBLACION **/
 select register_user('master', 'master@gmailcom', 'admin');
 
 select register_provider(12345678, 'juan miguel saracho', '12345678', 'La salle C. landivar #22', 'el_proveedor@gmail.com');
 
-select register_note('ingreso primera semana de julio', cast(now() as date), 1, 12345678);
+select register_note('Ingreso primera semana de julio', '2020-07-05', 1, 12345678);
 
 select register_clothing('T-Shirt Cuello V Bomber Amarillo', 'imagen_polera.jpg', 'Hombros caídos\nRemates de canalé\nInterior ligeramente cardado\nLargo de espalda en la talla M aprox. 72 cm', 'amarillo');
 select register_clothing('Camiseta funcional', 'imagen_polera.jpg', 'Producto a juego:2090290 - Leggings funcionales,Producto a juego: 2090355 - Top funcional,Aplique calado en los hombros,Detalle reflectante en la espalda,Largo de espalda en la talla S aprox. 61 cm', 'Azul/Blanco');
@@ -217,9 +237,9 @@ select register_category('Varones', 'Ropa para varones', true, true);
 select register_category('Damas', 'Ropa para mujeres', true, true);
 select register_category('Black Friday', 'Ofertas desde 20% hasta 70% de descuento', false, true);
 
-select register_new_cupon('30-08-2020', cast(20 as decimal(12,2)));
+select register_new_cupon('2020-08-19', cast(20 as decimal(12,2)));
 
-select register_user_client(87654321, 'Joaquin', 'Chumacero', 'joaquin@gmailcom', '12345678', 'Los Tusequis C. Los andes #23', 'Warnes', 'Warnes');
+select register_user_client(87654321, 'Joaquin', 'Chumacero', 'ruddyq96@gmail.com', '12345678', 'Los Tusequis C. Los andes #23', 'Warnes', 'Warnes');
 
 select get_coupon(87654321, cast(1 as smallint));
 

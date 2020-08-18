@@ -128,7 +128,7 @@ const restoreData = async (req, res) => {
             });
             contentHTML = `<p>Usuario Catbol. <br>
                                 Este es tu codigo de verificación <b>${key}</b> <br>
-                                <a href="http://localhost:3000/verify_key">Porfavor, sigue este enlace para restaurar tu cuenta</a> Gracias.
+                                <a href="http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/verify_key">Porfavor, sigue este enlace para restaurar tu cuenta</a> Gracias.
                             </p>`;
             const info = await sendEmail(contentHTML, email, 'Restauración de usuario');
             console.log('status email sent:', info);

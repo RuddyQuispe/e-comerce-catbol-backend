@@ -10,7 +10,7 @@ const getClothingManage = async (req, res) => {
 const postClothing = async (req, res) => {
     const {description, characteristics, color, cost, discount, list_size} = req.body;
     var array = list_size.split(',');
-    const idClothing = await clothingModel.registerClothing(description, `http://localhost:4000/img/${req.file.filename}`, characteristics, color);
+    const idClothing = await clothingModel.registerClothing(description, `http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/${req.file.filename}`, characteristics, color);
     if (idClothing > 0) {
         for (let index = 0; index < array.length; index++) {
             if (await clothingModel.registerClothingCost(array[index], idClothing, cost, discount)) {
@@ -40,7 +40,7 @@ const getPutClothing = async (req, res) => {
 const putClothing = async (req, res) => {
     const {description, characteristics, color, cost, discount} = req.body;
     const {code_clothing, id_size} = req.params;
-    if (await clothingModel.updateClothing(code_clothing, id_size, description, characteristics, color, cost, discount, `http://localhost:4000/img/${req.file.filename}`)) {
+    if (await clothingModel.updateClothing(code_clothing, id_size, description, characteristics, color, cost, discount, `http://ec2-54-232-175-236.sa-east-1.compute.amazonaws.com:4000/img/${req.file.filename}`)) {
         res.json({
             message : `${description} fue actualizado correctamente.`
         });

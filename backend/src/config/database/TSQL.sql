@@ -72,7 +72,7 @@ begin
 end $BODY$ language plpgsql;
 
 create or replace function register_size_clothes(id_size_i smallint, code_clothing_i integer, price_i decimal(12,2), discount_i decimal(12,2))returns boolean as 
-$BODY$e
+$BODY$
 begin 
 	if (discount_i<100 and price_i>0) then 
 		insert into size_clothes(id_size, code_clothing, price, discount, stock) values (id_size_i, code_clothing_i, price_i, discount_i, 0);
@@ -98,7 +98,6 @@ begin
 		end if;	
 	end if;
 end $BODY$ language plpgsql;
-
 
 create or replace function register_category(name_i text, description_i text, type_i boolean, status_i boolean)returns integer as 
 $BODY$
