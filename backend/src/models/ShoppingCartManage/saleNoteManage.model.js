@@ -14,7 +14,7 @@ module.exports = {
     async registerSaleNote(addressSend, noHome, province, city, paymentType, idShoppingCart, corporate, nit, person_receive){
         try {
             console.log(addressSend, noHome, province, city, paymentType, idShoppingCart, corporate, nit, person_receive);
-            const response = await pool.query(`select register_sale_note('${addressSend}', cast(${noHome} as smallint), '${province}', '${city}', ${paymentType}, ${idShoppingCart}, '${corporate}', '${nit}')`);
+            console.log(`select register_sale_note('${addressSend}', cast(${noHome} as smallint), '${province}', '${city}', ${paymentType}, ${idShoppingCart}, '${corporate}', '${nit}', '${person_receive}')`);
             const response = await pool.query(`select register_sale_note('${addressSend}', cast(${noHome} as smallint), '${province}', '${city}', ${paymentType}, ${idShoppingCart}, '${corporate}', '${nit}', '${person_receive}')`);
             return response.rows[0].register_sale_note;
         } catch (error) {
