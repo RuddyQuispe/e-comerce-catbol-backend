@@ -1,5 +1,4 @@
 const pool = require('../../database');
-const { getListShoppingList } = require('../../controllers/ShoppingCartManage/shoppingManage.controller');
 
 module.exports = {
     async getListClothesShopping(){

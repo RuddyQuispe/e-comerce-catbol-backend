@@ -1,8 +1,8 @@
 const htmlPDF = require('html-pdf'); 
+const path = require('path');
 const couponModel = require('../../models/ShoppingCartManage/couponManage.model');
 const saleNoteModel = require('../../models/ShoppingCartManage/saleNoteManage.model');
 const invoiceModel = require('../../models/ShoppingCartManage/invoiceManage.model');
-const path = require('path');
 
 const postRegisterInvoice = async (req, res) => {
     const {code_sale} = req.body;
