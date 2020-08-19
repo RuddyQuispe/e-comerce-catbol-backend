@@ -15,6 +15,7 @@ module.exports = {
         try {
             console.log(addressSend, noHome, province, city, paymentType, idShoppingCart, corporate, nit, person_receive);
             const response = await pool.query(`select register_sale_note('${addressSend}', cast(${noHome} as smallint), '${province}', '${city}', ${paymentType}, ${idShoppingCart}, '${corporate}', '${nit}')`);
+            const response = await pool.query(`select register_sale_note('${addressSend}', cast(${noHome} as smallint), '${province}', '${city}', ${paymentType}, ${idShoppingCart}, '${corporate}', '${nit}', '${person_receive}')`);
             return response.rows[0].register_sale_note;
         } catch (error) {
             console.log("Error in register sale note", error);
