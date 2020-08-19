@@ -128,7 +128,7 @@ const restoreData = async (req, res) => {
             });
             contentHTML = `<p>Usuario Catbol. <br>
                                 Este es tu codigo de verificación <b>${key}</b> <br>
-                                <a href="http://localhost:4000/verify_key">Porfavor, sigue este enlace para restaurar tu cuenta</a> Gracias.
+                                <a href="http://catbol.herokuapp.com/verify_key">Porfavor, sigue este enlace para restaurar tu cuenta</a> Gracias.
                             </p>`;
             const info = await sendEmail(contentHTML, email, 'Restauración de usuario');
             console.log('status email sent:', info);
